@@ -4,12 +4,12 @@ let connection = createPool({
     host: process.env.hostDb,
     user: process.env.userDb,
     password: process.env.pwdDb,
-    database: process.env.dbNam,
+    database: process.env.dbName,
     multipleStatements: true,
     connectionLimit: 30
 })
-connection.on('connection', (err) => { 
-    if (err) throw new Error('Couldn\'t connect to database, please try again later');
+connection.on('connection', (pool) => { 
+    if (!pool) throw new Error('Couldn\'t connect to database, please try again later');
 })
 export {
     connection
