@@ -1,6 +1,10 @@
 import express from "express";
 import path from "path";
 import { connection as db } from "./config/index.js";
+import { createToken } from "./middleware/AuthenticateUser.js";
+import { hash } from "bcrypt";
+import bodyParser from "body-parser";
+
 // Create an express app
 const app = express();
 const port = +process.env.PORT || 4000;
@@ -12,8 +16,8 @@ app.use(
   express.json(),
   express.urlencoded({
     extended: true,
-  })
-);
+  }))
+router.use(bodyParser.json());
 // Endpoints
 router.get("^/$|/eShop", (req, res) => {
   res.status(200).sendFile(path.resolve("./static/html/index.html"));
@@ -39,6 +43,7 @@ router.get("/users", (req, res) => {
     });
   }
 });
+
 router.get("/user/:id", (req, res) => {
   try {
     const strQry = `
@@ -61,6 +66,65 @@ router.get("/user/:id", (req, res) => {
     });
   }
 });
+
+router.get("/register", async (req, res) => {
+  try {
+      let data = req.body;
+      data.pwd = await hash(data.pwd, 10);
+      // Payload
+      let user = {
+        emailAdd: data.emailAdd,
+        pwd: data.pwd,
+      }
+      let strQry = `
+        insert into Users
+        SET ?;
+        `
+
+        db.query(strQry, [data], (err, results) => {
+          if (err) {
+            res.json({
+              status: res.statusCode,
+              msg: 'User created successfully'
+            })
+          } else {
+            const token = createToken(user);
+            res.json({
+              token,
+              msg: 'You are now registered.',
+            })
+          }
+        })
+  } catch (e) {
+
+  }
+});
+
+router.patch('/user/:id', async (req, res) => {
+  try {
+    let data = req.body;
+    if (data.pwd) {
+      data.pwd = await hash(data.pwd, 12);
+    }
+    const strQry = `
+    update Users
+    SET ?
+    where userID = ${req.params.id};
+    `;
+    db.query(strQry, [data], (err, results) => {
+      if (err) throw new Error('Unable to update user');
+      res.json({
+        status: res.statusCode,
+        msg: 'The user record was updated successfully'
+      })
+    })
+  } catch (e) {
+    res.json({
+      status: 404,
+      msg: e.message
+    })
+  }
+})
 
 router.get('*', (req, res) => {
     res.json ({
