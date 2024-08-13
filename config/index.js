@@ -14,3 +14,6 @@ connection.on('connection', (pool) => {
 export {
     connection
 }
+
+// connection is faster
+// connect pool is multi-thread

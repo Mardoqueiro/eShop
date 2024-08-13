@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 const app = express();
 const port = +process.env.PORT || 4000;
 const router = express.Router();
+
 // Middleware
 app.use(
   router,
@@ -18,7 +19,8 @@ app.use(
     extended: true,
   })
 );
-router.use(bodyParser.json());
+router.use(bodyParser.json()); // bodypaser is used to parse the body of the request
+
 // Endpoints
 router.get("^/$|/eShop", (req, res) => {
   res.status(200).sendFile(path.resolve("./static/html/index.html"));
@@ -26,7 +28,7 @@ router.get("^/$|/eShop", (req, res) => {
 router.get("/users", (req, res) => {
   try {
     const strQry = `
-            select firstName, lastName, age, emailAdd
+            select firstName, lastName, age, emailAdd, userRole, profileURL
             from Users;
             `;
     db.query(strQry, (err, results) => {
@@ -48,7 +50,7 @@ router.get("/users", (req, res) => {
 router.get("/user/:id", (req, res) => {
   try {
     const strQry = `
-              select userID, firstName, lastName, age, emailAdd
+              select userID, firstName, lastName, age, emailAdd, userRole, profileURL
               from Users 
               where userID = ${req.params.id};
               `;
