@@ -73,7 +73,7 @@ router.get("/user/:id", (req, res) => {
 router.get("/register", async (req, res) => {
   try {
     let data = req.body;
-    data.pwd = await hash(data.pwd, 10);
+    data.pwd = await hash(data.pwd, 12);
     // Payload
     let user = {
       emailAdd: data.emailAdd,
@@ -98,7 +98,12 @@ router.get("/register", async (req, res) => {
         });
       }
     });
-  } catch (e) {}
+  } catch (e) {
+    res.json({
+      status: 404,
+      msg: e.message,
+    });
+  }
 });
 
 router.patch("/user/:id", async (req, res) => {
@@ -153,7 +158,7 @@ router.post("/login", (req, res) => {
   try {
     const { emailAdd, pwd } = req.body;
     const strQry = `
-    SELECT userID, firstName, lastName, age, emailAdd, pwd
+    SELECT userID, firstName, lastName, age, emailAdd, pwd, userRole, profileURL
     from Users
     WHERE emailAdd = '${emailAdd}'
     `;
