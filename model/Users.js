@@ -44,7 +44,7 @@ class Users {
       });
     }
     }
-     async registerUser(req, res) {
+    async registerUser(req, res) {
     try {
         let data = req.body;
         data.pwd = await hash(data.pwd, 12);
