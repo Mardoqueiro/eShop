@@ -16,7 +16,7 @@ app.use(
 );
 
 app.use('/users', userRouter)
-app.use('products', productRouter)
+app.use('/products', productRouter)
 
 //router.use(bodyParser.json()); 
 // bodypaser is used to parse the body of the request
