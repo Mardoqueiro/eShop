@@ -1,5 +1,5 @@
-import { usersRouter, express } from './controller/UserController'
-import { productRouter, express } from './controller/ProductController';
+import { userRouter, express } from './controller/UserController.js';
+import { productRouter } from './controller/ProductController.js';
 import path from "path";
 
 // Create an express app
@@ -9,19 +9,18 @@ const router = express.Router();
 
 // Middleware
 app.use(router,
-  '/user', usersRouter,
-  '/product', productRouter,
+  ('/user', userRouter),
+  ('/product', productRouter),
   express.static("./static"),
   express.json(),
   express.urlencoded({
     extended: true,
   })
 );
-router.use(bodyParser.json()); // bodypaser is used to parse the body of the request
+//router.use(bodyParser.json()); 
+// bodypaser is used to parse the body of the request
 
 // Endpoints
-app.use();
-app.use();
 
 router.get("^/$|/eShop", (req, res) => {
   res.status(200).sendFile(path.resolve("./static/html/index.html"));

@@ -32,4 +32,7 @@ function verifyAToken(req, res, next) {
     });
   }
 }
-export { createToken };
+export { 
+  createToken,
+  verifyAToken 
+};
