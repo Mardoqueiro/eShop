@@ -4,9 +4,9 @@ class Products {
   fetchProducts(req, res) {
     try {
       const strQry = `
-        select productID, prodName, category, prodDescription, prodURL, amount
-        from Products
-        `;
+        SELECT productID, prodName, category, prodDescription, prodURL, amount
+        FROM Products;
+        `
       db.query(strQry, (err, results) => {
         //Results is to recieve multiple products, result is to get a singular
         if (err) throw new Error("Issue retrieving Products.");
